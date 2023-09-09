@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Board from "./Board";
+import { calculateWinner } from "./helpers";
 
 function Game() {
   const [n, setN] = useState(6); //n is the number of rows and columns in the board
@@ -24,75 +25,16 @@ function Game() {
     ));
   }
 
-  //function to check if a player has won.
-  //If a player has won, we can display text such as “Winner: X” or “Winner: O”.
-  const calculateWinner = (squares, k) => {
-    const size = Math.sqrt(squares.length);
-    // Check all rows
-    for (let row = 0; row < size; row++) {
-      let count = 0;
-      let prev = null;
-      for (let col = 0; col < size; col++) {
-        const current = squares[row * size + col];
-        if (current && current === prev) {
-          count += 1;
-          if (count === k) {
-            return current;
-          }
-        } else {
-          count = 1;
-          prev = current;
-        }
-      }
-    }
-
-    // Check all columns
-    for (let col = 0; col < size; col++) {
-      let count = 0;
-      let prev = null;
-      for (let row = 0; row < size; row++) {
-        const current = squares[row * size + col];
-        if (current && current === prev) {
-          count += 1;
-          if (count === k) {
-            return current;
-          }
-        } else {
-          count = 1;
-          prev = current;
-        }
-      }
-    }
-
-    // Check diagonals
-    for (let i = 0; i < squares.length; i++) {
-      let count = 0;
-      let prev = null;
-      for (let j = i; j < squares.length; j += size + 1) {
-        const current = squares[j];
-        if (current && current === prev) {
-          count += 1;
-          if (count === k) {
-            return current;
-          }
-        } else {
-          count = 1;
-          prev = current;
-        }
-      }
-    }
-
-
-  };
-
   //Declaring a Winner
   useEffect(() => {
     setWinner(calculateWinner(squares, k));
   }, [squares, k]);
+  //Adjust table dimension
   useEffect(() => {
     setSquares(Array(n ** 2).fill(null));
     setSteps([Array(n ** 2).fill(null)]);
   }, [n]);
+
   //Handle player
   const handleClick = (i) => {
     const squaresCopy = [...squares];
